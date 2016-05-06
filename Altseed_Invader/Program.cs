@@ -35,15 +35,21 @@ namespace Game
 
 		protected override void OnUpdate()
 		{
+			asd.Vector2DF pos=Position;
+
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Left) == asd.KeyState.Hold)
 			{
-				Position = Position - new asd.Vector2DF(2.0f, 0.0f);
+				pos.X -= 2.0f;
 			}
 
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Right) == asd.KeyState.Hold)
 			{
-				Position = Position + new asd.Vector2DF(2.0f, 0.0f);
+				pos.X += 2.0f;
 			}
+
+			pos.X = asd.MathHelper.Clamp(pos.X,asd.Engine.WindowSize.X - Texture.Size.X,0);
+
+			Position = pos;
 		}
 	}
 
