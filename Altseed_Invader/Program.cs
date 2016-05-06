@@ -67,6 +67,10 @@ namespace Game
 		protected override void OnUpdate()
 		{
 			Position = Position - new asd.Vector2DF(0.0f, 5.0f);
+			if(Position.Y<0)
+			{
+				Dispose();
+			}
 		}
 	}
 
