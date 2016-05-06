@@ -59,6 +59,7 @@ namespace Game
 				}
 			}
 		}
+
 	}
 
 	class ControlableObject : CollidableObject
@@ -88,7 +89,7 @@ namespace Game
 			pos.X = asd.MathHelper.Clamp(pos.X, asd.Engine.WindowSize.X - Texture.Size.X, 0);
 			Position = pos;
 
-			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count>=LastShoot+20 )
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count >= LastShoot + 20)
 			{
 				Bullet bullet = new Bullet(Position, true);
 				asd.Engine.AddObject2D(bullet);
@@ -101,6 +102,8 @@ namespace Game
 		{
 			if (!obj.OfPlayer)
 			{
+				ExplosionEffect bomb = new ExplosionEffect(Position);
+				asd.Engine.AddObject2D(bomb);
 				Dispose();
 			}
 		}
@@ -193,9 +196,31 @@ namespace Game
 		{
 			if (obj.OfPlayer)
 			{
+				ExplosionEffect bomb = new ExplosionEffect(Position);
+				asd.Engine.AddObject2D(bomb);
 				Dispose();
 			}
 		}
 	}
 
+	class ExplosionEffect : asd.TextureObject2D
+	{
+		private int Count;
+
+		public ExplosionEffect(asd.Vector2DF firstPosition)
+		{
+			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/bomb.png");
+			Position = firstPosition;
+			CenterPosition = Texture.Size.To2DF() / 2;
+		}
+
+		protected override void OnUpdate()
+		{
+			Count++;
+			if (Count == 10)
+			{
+				Dispose();
+			}
+		}
+	}
 }
