@@ -12,13 +12,25 @@ namespace Game
 		[System.STAThread]
 		static void Main(string[] args)
 		{
-			asd.Engine.Initialize("Invader", 640, 480, new asd.EngineOption());
+			asd.Engine.Initialize("Invader", 480, 640, new asd.EngineOption());
+
+			ControlableObject player = new ControlableObject();
+			asd.Engine.AddObject2D(player);
 
 			while (asd.Engine.DoEvents())
 			{
 				asd.Engine.Update();
 			}
-		asd.Engine.Terminate();
+			asd.Engine.Terminate();
 		}
 	}
+
+	class ControlableObject : asd.TextureObject2D
+	{
+		public ControlableObject()
+		{
+			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/player.png");
+		}
+	}
+
 }
