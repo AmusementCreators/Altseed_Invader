@@ -30,6 +30,20 @@ namespace Game
 		public ControlableObject()
 		{
 			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/player.png");
+			Position = new asd.Vector2DF(222, 600);
+		}
+
+		protected override void OnUpdate()
+		{
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Left) == asd.KeyState.Hold)
+			{
+				Position = Position - new asd.Vector2DF(2.0f, 0.0f);
+			}
+
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Right) == asd.KeyState.Hold)
+			{
+				Position = Position + new asd.Vector2DF(2.0f, 0.0f);
+			}
 		}
 	}
 
