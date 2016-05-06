@@ -21,7 +21,7 @@ namespace Game
 			{
 				for (int y = 0; y < 6; y++)
 				{
-					FloatingObject enemy = new FloatingObject(new asd.Vector2DF(70 + x * 50.0f, 50 + y * 50.0f), y % 3);
+					FloatingObject enemy = new FloatingObject(new asd.Vector2DF(95 + x * 50.0f, 50 + y * 50.0f), y % 3);
 					asd.Engine.AddObject2D(enemy);
 				}
 			}
@@ -109,6 +109,29 @@ namespace Game
 				Texture = Animation[1];
 			}
 
+			asd.Vector2DF pos = Position;
+			int phase = Count % 260;
+			if (phase < 50)
+			{
+				pos.X += 1.0f;
+			}
+			else if (phase < 80)
+			{
+				pos.Y += 1.0f;
+			}
+			else if (phase < 180)
+			{
+				pos.X -= 1.0f;
+			}
+			else if (phase < 210)
+			{
+				pos.Y += 1.0f;
+			}
+			else
+			{
+				pos.X += 1.0f;
+			}
+			Position = pos;
 			Count++;
 		}
 	}
