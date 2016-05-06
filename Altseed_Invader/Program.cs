@@ -34,6 +34,24 @@ namespace Game
 		}
 	}
 
+	abstract class CollidableObject : asd.TextureObject2D
+	{
+		protected bool IsCollide(CollidableObject obj)
+		{
+			if (obj == this) return false;
+			if (obj == null) return false;
+
+			return Position.X - Texture.Size.X / 2 < obj.Position.X &&
+				obj.Position.X < Position.X + Texture.Size.X / 2 &&
+				Position.Y - Texture.Size.Y / 2 < obj.Position.Y &&
+				obj.Position.Y < Position.Y + Texture.Size.Y / 2;
+		}
+
+		protected virtual void OnCollide()
+		{
+		}
+	}
+
 	class ControlableObject : asd.TextureObject2D
 	{
 		public ControlableObject()
@@ -66,7 +84,7 @@ namespace Game
 		}
 	}
 
-	class Bullet : asd.TextureObject2D
+	class Bullet : CollidableObject
 	{
 		public Bullet(asd.Vector2DF firstPosition)
 		{
@@ -85,7 +103,7 @@ namespace Game
 		}
 	}
 
-	class FloatingObject : asd.TextureObject2D
+	class FloatingObject : CollidableObject
 	{
 		private asd.Texture2D[] Animation = new asd.Texture2D[2];
 		private int Count;
@@ -133,6 +151,24 @@ namespace Game
 			}
 			Position = pos;
 			Count++;
+
+			CheckCollide();
+		}
+
+		protected override void OnCollide()
+		{
+			Dispose();
+		}
+
+		private void CheckCollide()
+		{
+			foreach (var o in Layer.Objects)
+			{
+				if (IsCollide(o as CollidableObject))
+				{
+					OnCollide();
+				}
+			}
 		}
 	}
 
