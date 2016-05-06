@@ -63,6 +63,8 @@ namespace Game
 
 	class ControlableObject : CollidableObject
 	{
+		private int Count;
+		private int LastShoot;
 		public ControlableObject()
 		{
 			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/player.png");
@@ -72,6 +74,7 @@ namespace Game
 
 		protected override void OnUpdate()
 		{
+			Count++;
 			asd.Vector2DF pos = Position;
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Left) == asd.KeyState.Hold)
 			{
@@ -85,10 +88,11 @@ namespace Game
 			pos.X = asd.MathHelper.Clamp(pos.X, asd.Engine.WindowSize.X - Texture.Size.X, 0);
 			Position = pos;
 
-			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push)
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count>=LastShoot+20 )
 			{
 				Bullet bullet = new Bullet(Position, true);
 				asd.Engine.AddObject2D(bullet);
+				LastShoot = Count;
 			}
 			CheckCollide();
 		}
@@ -176,7 +180,9 @@ namespace Game
 
 			CheckCollide();
 
-			if (Rand.Next(100) == 0)
+			int range = Layer.Objects.Count(x => x is FloatingObject) * 10;
+
+			if (Rand.Next(range) == 0)
 			{
 				Bullet bullet = new Bullet(Position, false);
 				asd.Engine.AddObject2D(bullet);
