@@ -36,7 +36,6 @@ namespace Game
 		protected override void OnUpdate()
 		{
 			asd.Vector2DF pos=Position;
-
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Left) == asd.KeyState.Hold)
 			{
 				pos.X -= 2.0f;
@@ -46,10 +45,28 @@ namespace Game
 			{
 				pos.X += 2.0f;
 			}
-
 			pos.X = asd.MathHelper.Clamp(pos.X,asd.Engine.WindowSize.X - Texture.Size.X,0);
-
 			Position = pos;
+
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push)
+			{
+				Bullet bullet = new Bullet(Position+new asd.Vector2DF(18.0f,0.0f));
+				asd.Engine.AddObject2D(bullet);
+			}
+		}
+	}
+
+	class Bullet :asd.TextureObject2D
+	{
+		public Bullet(asd.Vector2DF firstPosition)
+		{
+			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/bullet.png");
+			Position = firstPosition;
+		}
+
+		protected override void OnUpdate()
+		{
+			Position = Position - new asd.Vector2DF(0.0f, 5.0f);
 		}
 	}
 
