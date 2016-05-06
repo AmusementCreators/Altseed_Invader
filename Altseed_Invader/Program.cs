@@ -39,7 +39,6 @@ namespace Game
 	{
 		protected bool IsCollide(Bullet obj)
 		{
-			if (obj == this) return false;
 			if (obj == null) return false;
 
 			return Position.X - Texture.Size.X / 2 < obj.Position.X &&
@@ -48,12 +47,21 @@ namespace Game
 				obj.Position.Y < Position.Y + Texture.Size.Y / 2;
 		}
 
-		protected virtual void OnCollide(Bullet obj)
+		protected abstract void OnCollide(Bullet obj);
+
+		protected void CheckCollide()
 		{
+			foreach (var o in Layer.Objects)
+			{
+				if (IsCollide(o as Bullet))
+				{
+					OnCollide(o as Bullet);
+				}
+			}
 		}
 	}
 
-	class ControlableObject : asd.TextureObject2D
+	class ControlableObject : CollidableObject
 	{
 		public ControlableObject()
 		{
@@ -82,10 +90,19 @@ namespace Game
 				Bullet bullet = new Bullet(Position, true);
 				asd.Engine.AddObject2D(bullet);
 			}
+			CheckCollide();
+		}
+
+		protected override void OnCollide(Bullet obj)
+		{
+			if (!obj.OfPlayer)
+			{
+				Dispose();
+			}
 		}
 	}
 
-	class Bullet : CollidableObject
+	class Bullet : asd.TextureObject2D
 	{
 		public bool OfPlayer;
 		public Bullet(asd.Vector2DF firstPosition, bool ofPlayer)
@@ -171,17 +188,6 @@ namespace Game
 			if (obj.OfPlayer)
 			{
 				Dispose();
-			}
-		}
-
-		private void CheckCollide()
-		{
-			foreach (var o in Layer.Objects)
-			{
-				if (IsCollide(o as Bullet))
-				{
-					OnCollide(o as Bullet);
-				}
 			}
 		}
 	}
