@@ -17,11 +17,12 @@ namespace Game
 			ControlableObject player = new ControlableObject();
 			asd.Engine.AddObject2D(player);
 
+			Random random = new Random();
 			for (int x = 0; x < 10; x++)
 			{
 				for (int y = 0; y < 6; y++)
 				{
-					FloatingObject enemy = new FloatingObject(new asd.Vector2DF(95 + x * 50.0f, 50 + y * 50.0f), y % 3);
+					FloatingObject enemy = new FloatingObject(new asd.Vector2DF(95 + x * 50.0f, 50 + y * 50.0f), y % 3, random);
 					asd.Engine.AddObject2D(enemy);
 				}
 			}
@@ -36,7 +37,7 @@ namespace Game
 
 	abstract class CollidableObject : asd.TextureObject2D
 	{
-		protected bool IsCollide(CollidableObject obj)
+		protected bool IsCollide(Bullet obj)
 		{
 			if (obj == this) return false;
 			if (obj == null) return false;
@@ -47,7 +48,7 @@ namespace Game
 				obj.Position.Y < Position.Y + Texture.Size.Y / 2;
 		}
 
-		protected virtual void OnCollide()
+		protected virtual void OnCollide(Bullet obj)
 		{
 		}
 	}
@@ -78,7 +79,7 @@ namespace Game
 
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push)
 			{
-				Bullet bullet = new Bullet(Position);
+				Bullet bullet = new Bullet(Position, true);
 				asd.Engine.AddObject2D(bullet);
 			}
 		}
@@ -86,16 +87,18 @@ namespace Game
 
 	class Bullet : CollidableObject
 	{
-		public Bullet(asd.Vector2DF firstPosition)
+		public bool OfPlayer;
+		public Bullet(asd.Vector2DF firstPosition, bool ofPlayer)
 		{
 			Texture = asd.Engine.Graphics.CreateTexture2D("Resources/bullet.png");
 			Position = firstPosition;
 			CenterPosition = Texture.Size.To2DF() / 2;
+			OfPlayer = ofPlayer;
 		}
 
 		protected override void OnUpdate()
 		{
-			Position = Position - new asd.Vector2DF(0.0f, 5.0f);
+			Position = Position - new asd.Vector2DF(0.0f, (OfPlayer ? 5.0f : -5.0f));
 			if (Position.Y < 0)
 			{
 				Dispose();
@@ -107,13 +110,15 @@ namespace Game
 	{
 		private asd.Texture2D[] Animation = new asd.Texture2D[2];
 		private int Count;
+		private Random Rand;
 
-		public FloatingObject(asd.Vector2DF firstPosition, int textureNo)
+		public FloatingObject(asd.Vector2DF firstPosition, int textureNo, Random random)
 		{
 			Animation[0] = asd.Engine.Graphics.CreateTexture2D("Resources/enemy" + textureNo * 2 + ".png");
 			Animation[1] = asd.Engine.Graphics.CreateTexture2D("Resources/enemy" + (textureNo * 2 + 1) + ".png");
 			Position = firstPosition;
 			CenterPosition = Animation[0].Size.To2DF() / 2;
+			Rand = random;
 		}
 
 		protected override void OnUpdate()
@@ -153,20 +158,29 @@ namespace Game
 			Count++;
 
 			CheckCollide();
+
+			if (Rand.Next(100) == 0)
+			{
+				Bullet bullet = new Bullet(Position, false);
+				asd.Engine.AddObject2D(bullet);
+			}
 		}
 
-		protected override void OnCollide()
+		protected override void OnCollide(Bullet obj)
 		{
-			Dispose();
+			if (obj.OfPlayer)
+			{
+				Dispose();
+			}
 		}
 
 		private void CheckCollide()
 		{
 			foreach (var o in Layer.Objects)
 			{
-				if (IsCollide(o as CollidableObject))
+				if (IsCollide(o as Bullet))
 				{
-					OnCollide();
+					OnCollide(o as Bullet);
 				}
 			}
 		}
