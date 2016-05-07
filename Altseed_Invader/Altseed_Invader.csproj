@@ -55,7 +55,6 @@
     <Compile Include="FloatingObject.cs" />
     <Compile Include="GameOverScene.cs" />
     <Compile Include="GameScene.cs" />
-    <Compile Include="ObjectLayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="TitleScene.cs" />
   </ItemGroup>

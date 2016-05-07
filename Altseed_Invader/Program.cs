@@ -14,7 +14,7 @@ namespace Game
 		{
 			asd.Engine.Initialize("Invader", 640, 640, new asd.EngineOption());
 
-			asd.Engine.ChangeScene(new GameScene());
+			asd.Engine.ChangeScene(new TitleScene());
 
 			while (asd.Engine.DoEvents())
 			{
