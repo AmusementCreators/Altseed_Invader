@@ -59,7 +59,7 @@ namespace Game
 
 			CheckCollide();
 
-			int range = Layer.Objects.Count(x => x is FloatingObject) * 10;
+			int range = Layer.Objects.Count(x => x is FloatingObject) * 20;
 
 			if (Rand.Next(range) == 0)
 			{

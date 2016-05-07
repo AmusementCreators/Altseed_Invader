@@ -33,7 +33,7 @@ namespace Game
 			pos.X = asd.MathHelper.Clamp(pos.X, asd.Engine.WindowSize.X - Texture.Size.X, 0);
 			Position = pos;
 
-			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count >= LastShoot + 20)
+			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count >= LastShoot + 10)
 			{
 				Bullet bullet = new Bullet(Position, true);
 				Layer.AddObject(bullet);
@@ -48,7 +48,8 @@ namespace Game
 			{
 				ExplosionEffect bomb = new ExplosionEffect(Position);
 				Layer.AddObject(bomb);
-				Dispose();
+
+				asd.Engine.ChangeScene(new GameOverScene("GAMEOVER"));
 			}
 		}
 	}
