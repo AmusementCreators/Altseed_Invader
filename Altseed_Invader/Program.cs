@@ -14,8 +14,22 @@ namespace Game
 		{
 			asd.Engine.Initialize("Invader", 640, 640, new asd.EngineOption());
 
+			asd.Engine.ChangeScene(new GameScene());
+
+			while (asd.Engine.DoEvents())
+			{
+				asd.Engine.Update();
+			}
+			asd.Engine.Terminate();
+		}
+	}
+
+	class ObjectLayer : asd.Layer2D
+	{
+		public ObjectLayer()
+		{
 			ControlableObject player = new ControlableObject();
-			asd.Engine.AddObject2D(player);
+			AddObject(player);
 
 			Random random = new Random();
 			for (int x = 0; x < 10; x++)
@@ -23,15 +37,17 @@ namespace Game
 				for (int y = 0; y < 6; y++)
 				{
 					FloatingObject enemy = new FloatingObject(new asd.Vector2DF(95 + x * 50.0f, 50 + y * 50.0f), y % 3, random);
-					asd.Engine.AddObject2D(enemy);
+					AddObject(enemy);
 				}
 			}
+		}
+	}
 
-			while (asd.Engine.DoEvents())
-			{
-				asd.Engine.Update();
-			}
-			asd.Engine.Terminate();
+	class GameScene : asd.Scene
+	{
+		public GameScene()
+		{
+			AddLayer(new ObjectLayer());
 		}
 	}
 
@@ -92,7 +108,7 @@ namespace Game
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push && Count >= LastShoot + 20)
 			{
 				Bullet bullet = new Bullet(Position, true);
-				asd.Engine.AddObject2D(bullet);
+				Layer.AddObject(bullet);
 				LastShoot = Count;
 			}
 			CheckCollide();
@@ -103,7 +119,7 @@ namespace Game
 			if (!obj.OfPlayer)
 			{
 				ExplosionEffect bomb = new ExplosionEffect(Position);
-				asd.Engine.AddObject2D(bomb);
+				Layer.AddObject(bomb);
 				Dispose();
 			}
 		}
@@ -188,7 +204,7 @@ namespace Game
 			if (Rand.Next(range) == 0)
 			{
 				Bullet bullet = new Bullet(Position, false);
-				asd.Engine.AddObject2D(bullet);
+				Layer.AddObject(bullet);
 			}
 		}
 
@@ -197,8 +213,9 @@ namespace Game
 			if (obj.OfPlayer)
 			{
 				ExplosionEffect bomb = new ExplosionEffect(Position);
-				asd.Engine.AddObject2D(bomb);
+				Layer.AddObject(bomb);
 				Dispose();
+				obj.Dispose();
 			}
 		}
 	}
