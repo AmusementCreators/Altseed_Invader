@@ -48,8 +48,8 @@ namespace Game
 			{
 				ExplosionEffect bomb = new ExplosionEffect(Position);
 				Layer.AddObject(bomb);
-
-				asd.Engine.ChangeScene(new GameOverScene("GAMEOVER"));
+				Dispose();
+				asd.Engine.ChangeSceneWithTransition(new GameOverScene("GAMEOVER"),new asd.TransitionFade(1.0f,1.0f));
 			}
 		}
 	}

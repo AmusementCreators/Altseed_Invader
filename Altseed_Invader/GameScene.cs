@@ -34,7 +34,7 @@ namespace Game
 		{
 			if (!Layer.Objects.Any(x => x is FloatingObject))
 			{
-				asd.Engine.ChangeScene(new GameOverScene("CONGRATULATIONS"));
+				asd.Engine.ChangeSceneWithTransition(new GameOverScene("CONGRATULATIONS"),new asd.TransitionFade(1.0f,1.0f));
 			}
 		}
 	}

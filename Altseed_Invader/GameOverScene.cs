@@ -35,7 +35,7 @@ namespace Game
 		{
 			if (asd.Engine.Keyboard.GetKeyState(asd.Keys.Space) == asd.KeyState.Push)
 			{
-				asd.Engine.ChangeScene(new TitleScene());
+				asd.Engine.ChangeSceneWithTransition(new TitleScene(),new asd.TransitionFade(1.0f,1.0f));
 			}
 		}
 	}
