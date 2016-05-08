@@ -10,8 +10,6 @@ namespace Game
 	{
 		protected bool IsCollide(Bullet obj)
 		{
-			if (obj == null) return false;
-
 			return Position.X - Texture.Size.X / 2 < obj.Position.X &&
 				obj.Position.X < Position.X + Texture.Size.X / 2 &&
 				Position.Y - Texture.Size.Y / 2 < obj.Position.Y &&
@@ -24,9 +22,10 @@ namespace Game
 		{
 			foreach (var o in Layer.Objects)
 			{
-				if (IsCollide(o as Bullet))
+				Bullet bullet = o as Bullet;
+				if (bullet != null && IsCollide(bullet))
 				{
-					OnCollide(o as Bullet);
+					OnCollide(bullet);
 				}
 			}
 		}
