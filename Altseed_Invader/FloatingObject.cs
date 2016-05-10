@@ -11,6 +11,7 @@ namespace Game
 		private asd.Texture2D[] Animation = new asd.Texture2D[2];
 		private int Count;
 		private Random Rand;
+		private IEnumerator<asd.Vector2DF> Behavior;
 
 		public FloatingObject(asd.Vector2DF firstPosition, int textureNo, Random random)
 		{
@@ -19,6 +20,34 @@ namespace Game
 			Position = firstPosition;
 			CenterPosition = Animation[0].Size.To2DF() / 2;
 			Rand = random;
+			Behavior = CreateMovementIterator();
+		}
+
+		protected IEnumerator<asd.Vector2DF> CreateMovementIterator()
+		{
+			while (true)
+			{
+				for (int i = 0; i < 50; i++)
+				{
+					yield return new asd.Vector2DF(1.0f, 0.0f);
+				}
+				for (int i = 0; i < 30; i++)
+				{
+					yield return new asd.Vector2DF(0.0f, 1.0f);
+				}
+				for (int i = 0; i < 100; i++)
+				{
+					yield return new asd.Vector2DF(-1.0f, 0.0f);
+				}
+				for (int i = 0; i < 30; i++)
+				{
+					yield return new asd.Vector2DF(0.0f, 1.0f);
+				}
+				for (int i = 0; i < 50; i++)
+				{
+					yield return new asd.Vector2DF(1.0f, 0.0f);
+				}
+			}
 		}
 
 		protected override void OnUpdate()
@@ -32,31 +61,8 @@ namespace Game
 				Texture = Animation[1];
 			}
 
-			asd.Vector2DF pos = Position;
-			int phase = Count % 260;
-			if (phase < 50)
-			{
-				pos.X += 1.0f;
-			}
-			else if (phase < 80)
-			{
-				pos.Y += 1.0f;
-			}
-			else if (phase < 180)
-			{
-				pos.X -= 1.0f;
-			}
-			else if (phase < 210)
-			{
-				pos.Y += 1.0f;
-			}
-			else
-			{
-				pos.X += 1.0f;
-			}
-			Position = pos;
-			Count++;
-
+			Position = Position + Behavior.Current;
+			Behavior.MoveNext();
 			CheckCollide();
 
 			int range = Layer.Objects.Count(x => x is FloatingObject) * 20;
@@ -66,6 +72,8 @@ namespace Game
 				Bullet bullet = new Bullet(Position, false);
 				Layer.AddObject(bullet);
 			}
+
+			Count++;
 		}
 
 		protected override void OnCollide(Bullet obj)
