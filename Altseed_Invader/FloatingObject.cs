@@ -12,6 +12,7 @@ namespace Game
 		private int Count;
 		private Random Rand;
 		private IEnumerator<asd.Vector2DF> Behavior;
+		private IEnumerator<asd.Texture2D> TextureSwitcher;
 
 		public FloatingObject(asd.Vector2DF firstPosition, int textureNo, Random random)
 		{
@@ -21,6 +22,7 @@ namespace Game
 			CenterPosition = Animation[0].Size.To2DF() / 2;
 			Rand = random;
 			Behavior = CreateMovementIterator();
+			TextureSwitcher = CreateTextureIterator(Animation);
 		}
 
 		protected IEnumerator<asd.Vector2DF> CreateMovementIterator()
@@ -50,16 +52,25 @@ namespace Game
 			}
 		}
 
+		protected IEnumerator<asd.Texture2D> CreateTextureIterator(asd.Texture2D[] textures)
+		{
+			while(true)
+			{
+				for(int i=0;i<60;i++)
+				{
+					yield return textures[0];
+				}
+				for (int i = 0; i < 60; i++)
+				{
+					yield return textures[1];
+				}
+			}
+		}
+
 		protected override void OnUpdate()
 		{
-			if (Count % 120 == 0)
-			{
-				Texture = Animation[0];
-			}
-			else if (Count % 120 == 60)
-			{
-				Texture = Animation[1];
-			}
+			Texture = TextureSwitcher.Current;
+			TextureSwitcher.MoveNext();
 
 			Position = Position + Behavior.Current;
 			Behavior.MoveNext();
